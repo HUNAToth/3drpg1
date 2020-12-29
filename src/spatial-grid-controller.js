@@ -14,9 +14,10 @@ export const spatial_grid_controller = (() => {
       const pos = [
           this._parent._position.x,
           this._parent._position.z,
+          this._parent._position.y,
       ];
 
-      this._client = this._grid.NewClient(pos, [1, 1]);
+      this._client = this._grid.NewClient(pos, [1, 1, 1]);
       this._client.entity = this._parent;
       this._RegisterHandler('update.position', (m) => this._OnPosition(m));
     }
@@ -28,7 +29,7 @@ export const spatial_grid_controller = (() => {
 
     FindNearbyEntities(range) {
       const results = this._grid.FindNear(
-          [this._parent._position.x, this._parent._position.z], [range, range]);
+          [this._parent._position.x, this._parent._position.z,, this._parent._position.z], [range, range, range]);
           
       return results.filter(c => c.entity != this._parent);
     }

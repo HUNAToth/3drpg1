@@ -65,10 +65,9 @@ export const player_state = (() => {
       this._action = this._parent._proxy._animations['jump'].action;
       const mixer = this._action.getMixer();
       mixer.addEventListener('finished', this._FinishedCallback);
-  
+
       if (prevState) {
         const prevAction = this._parent._proxy._animations[prevState.Name].action;
-  
         this._action.reset();  
         this._action.setLoop(THREE.LoopOnce, 1);
         this._action.clampWhenFinished = true;
@@ -191,6 +190,7 @@ export const player_state = (() => {
         if (input._keys.shift) {
           this._parent.SetState('run');
         }else if (input._keys.jump) {
+          ;
           this._parent.SetState('jump');
         }
         return;
@@ -238,7 +238,9 @@ export const player_state = (() => {
   
     Update(timeElapsed, input) {
       if (input._keys.forward || input._keys.backward) {
-        if (!input._keys.shift) {
+        if(input._keys.jump){
+          this._parent.SetState('jump');
+        }else if (!input._keys.shift) {
           this._parent.SetState('walk');
         }
         return;

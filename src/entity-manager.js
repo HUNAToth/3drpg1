@@ -30,7 +30,8 @@ export const entity_manager = (() => {
 
       this._entitiesMap[n] = e;
       this._entities.push(e);
-
+      console.log(e);
+      console.log(this);
       e.SetParent(this);
       e.SetName(n);
     }

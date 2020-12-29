@@ -82,6 +82,7 @@ export const player_input = (() => {
           break;
           case 65: // a
             this._keys.left = true;
+            break;
         case 66: // b
           this._keys.jump = true;
           break;

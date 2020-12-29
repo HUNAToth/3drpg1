@@ -45,9 +45,9 @@ export const player_entity = (() => {
 
     _Init(params) {
       this._params = params;
-      this._decceleration = new THREE.Vector3(-0.0005, -0.0001, -5.0);
-      this._acceleration = new THREE.Vector3(1, 0.125, 50.0);
-      this._velocity = new THREE.Vector3(0, 100, 0);
+      this._decceleration = new THREE.Vector3(-0.0005, -0.125, -5.0);
+      this._acceleration = new THREE.Vector3(2, 0.125, 50.0);
+      this._velocity = new THREE.Vector3(0, 0, 0);
       this._position = new THREE.Vector3();
   
       this._animations = {};
@@ -178,9 +178,10 @@ export const player_entity = (() => {
       }
     
       const velocity = this._velocity;
+      
       const frameDecceleration = new THREE.Vector3(
           velocity.x * this._decceleration.x,
-          velocity.y * this._decceleration.y,
+          velocity.y * this._decceleration.y*100,
           velocity.z * this._decceleration.z
       );
       frameDecceleration.multiplyScalar(timeInSeconds);
@@ -198,12 +199,11 @@ export const player_entity = (() => {
       if (input._keys.shift) {
         acc.multiplyScalar(2.0);
       }
-  
-      if (input._keys.forward) {
-        velocity.z += acc.z * timeInSeconds;
+      if(input._keys.jump){
+        velocity.y += 1;
       }
       if (input._keys.forward) {
-        velocity.y += acc.y * timeInSeconds;
+        velocity.z += acc.z * timeInSeconds;
       }
       if (input._keys.backward) {
         velocity.z -= acc.z * timeInSeconds;
@@ -231,15 +231,22 @@ export const player_entity = (() => {
       const sideways = new THREE.Vector3(1, 0, 0);
       sideways.applyQuaternion(controlObject.quaternion);
       sideways.normalize();
-  
+
+      const upward = new THREE.Vector3(0, 1, 0);
+      upward.applyQuaternion(controlObject.quaternion);
+      upward.normalize();
+
       sideways.multiplyScalar(velocity.x * timeInSeconds);
       forward.multiplyScalar(velocity.z * timeInSeconds);
-  
+      upward.multiplyScalar(velocity.y * timeInSeconds);
+
       const pos = controlObject.position.clone();
       pos.add(forward);
       pos.add(sideways);
+      pos.add(upward);
 
       const collisions = this._FindIntersections(pos);
+      
       if (collisions.length > 0) {
         return;
       }

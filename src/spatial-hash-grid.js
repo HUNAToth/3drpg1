@@ -60,11 +60,12 @@ export const spatial_hash_grid = (() => {
     }
   
     FindNear(position, bounds) {
-      const [x, y] = position;
-      const [w, h] = bounds;
+      const [x, y, z] = position;
+      const [w, h, wh] = bounds;
   
       const i1 = this._GetCellIndex([x - w / 2, y - h / 2]);
       const i2 = this._GetCellIndex([x + w / 2, y + h / 2]);
+      const under = this._GetCellIndex([0,y/2]);
   
       const clients = [];
       const queryId = this._queryIds++;

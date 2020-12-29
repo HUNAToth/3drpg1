@@ -21,6 +21,7 @@ import { attack_controller } from './attacker-controller.js';
 
 
 import { PickHelper } from './PickHelper.js';
+import { TerrainChunkManager } from './TerrainChunkManager.js';
 
 const fov = 60;
 const aspect = 1360 / 720;
@@ -55,14 +56,15 @@ class HackNSlashDemo {
 
 
     this._LoadLights();
-    this._LoadPlane("./resources/fu.jpg", 5000, 5000, false, true, -Math.PI / 2, 0);
+    //this._LoadPlane("./resources/fu.jpg", 5000, 5000, false, true, -Math.PI / 2, 0);
 
+    this._Load3dMap();
     this._LoadControllers();
     this._LoadPlayer();
    // this._LoadFoliage();
    // this._LoadClouds();
     this._LoadSky();
-    //this._LoadBuildings();
+    this._LoadBuildings();
   //  this._loadMonsters();
 
     this._previousRAF = null;
@@ -236,15 +238,28 @@ class HackNSlashDemo {
       './resources/haz/',
       'nyitotthaz',
       '.fbx', 100, 0, 100, 0.1, true, true, '');
-    for (let i = 0; i < 2; ++i) {
+
+     /* this._AddObject(
+        './resources/haz/',
+        'city',
+        '.fbx', 0, 0, 0, 0.1, true, true, '');*/
+   /* for (let i = 0; i < 2; ++i) {
       this._AddObject(
         './resources/haz/',
         'haz2',
         '.fbx', math.rand_range(-400,400), 0,  math.rand_range(-400,400), 0.05, true, true, '');
-    }
+    }*/
 
   }
 
+
+  _Load3dMap(){
+    this._entityManager.Add(new TerrainChunkManager({
+      scene: const_scene,
+      gui: this._gui,
+      guiParams: this._guiParams,
+    }),"TerrainChunkManager")
+  }
 
   _LoadPlayer() {
     const params = {
@@ -452,3 +467,29 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
+class FlaredCornerHeightGenerator {
+  constructor() {
+  }
+
+  Get(x, y) {
+    if (x == -250 && y == 250) {
+      return [128, 1];
+    }
+    return [0, 1];
+  }
+}
+
+
+class BumpHeightGenerator {
+  constructor() {
+  }
+
+  Get(x, y) {
+    const dist = new THREE.Vector2(x, y).distanceTo(new THREE.Vector2(0, 0));
+
+    let h = 1.0 - math.sat(dist / 250.0);
+    h = h * h * h * (h * (h * 6 - 15) + 10);
+
+    return [h * 128, 1];
+  }
+}
